@@ -20,10 +20,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.learning.R
-import com.app.learning.ui.theme.LearningTheme
+import com.app.learning.view.ui.theme.LearningTheme
 
 @Composable
-fun Login(onNavigate: () -> Unit) {
+fun StatefulLogin(navigateToRegistration : (Int) -> Unit) {
+    StatelessLogin(navigateToRegistration = navigateToRegistration)
+}
+
+@Composable
+private fun StatelessLogin(navigateToRegistration: (Int) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -89,10 +94,9 @@ fun Login(onNavigate: () -> Unit) {
                     append("Sign up.")
                 }
             },
-            //textAlign = TextAlign.Center,
             modifier = Modifier.padding(16.dp),
             onClick = {
-                onNavigate()
+                navigateToRegistration(it)
             }
         )
     }
@@ -102,6 +106,6 @@ fun Login(onNavigate: () -> Unit) {
 @Composable
 fun DefaultLoginPreview() {
     LearningTheme {
-        Login{}
+        StatelessLogin{}
     }
 }

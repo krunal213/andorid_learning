@@ -1,12 +1,10 @@
 package com.app.learning.view
 
-import android.os.Handler
-import android.os.Looper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -19,20 +17,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.learning.R
-import com.app.learning.ui.theme.LearningTheme
+import com.app.learning.Result
+import com.app.learning.view.ui.theme.LearningTheme
 import com.app.learning.viewmodel.LoginViewmodel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
+@Composable
+fun StatefulSplash(
+    navigateToLogin: () -> Unit,
+    loginViewmodel: LoginViewmodel = viewModel()
+) {
+    when (loginViewmodel.openMainScreenAfterDelay().observeAsState().value) {
+        is Result.Success -> {
+            navigateToLogin()
+        }
+        is Result.Loading -> {
+            StatelessSplash()
+        }
+    }
+}
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun Splash(onNavigate: () -> Unit) {
+private fun StatelessSplash() {
     Column(modifier = Modifier.padding(24.dp)) {
         Column(
             modifier = Modifier
@@ -76,20 +84,12 @@ fun Splash(onNavigate: () -> Unit) {
             )
         )
     }
-    LaunchedEffect(key1 = "", block = {
-        LoginViewmodel()
-            .openMainScreenAfterDelay()
-            .drop(1)
-            .collectLatest {
-                onNavigate()
-        }
-    })
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultSplashPreview() {
     LearningTheme {
-        Splash() {}
+        StatelessSplash()
     }
 }
