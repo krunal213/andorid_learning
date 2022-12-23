@@ -14,16 +14,22 @@ fun LearningNavHost(
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(navController = navController, startDestination = "splash") {
-        composable("splash") { StatefulSplash(
-            navigateToLogin = {
-                navController.navigate("login")
-            }
-        ) }
-        composable("login") { StatefulLogin(
-            navigateToRegistration = {
-                navController.navigate("registration")
-            }
-        ) }
+        composable("splash") {
+            StatefulSplash(
+                navigateToLogin = {
+                    with(navController){
+
+                    }
+                }
+            )
+        }
+        composable("login") {
+            StatefulLogin(
+                navigateToRegistration = {
+                    navController.navigate("registration")
+                }
+            )
+        }
         composable("registration") {
             Registration()
         }

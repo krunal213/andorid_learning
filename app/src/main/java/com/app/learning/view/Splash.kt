@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -28,7 +28,7 @@ fun StatefulSplash(
     navigateToLogin: () -> Unit,
     loginViewmodel: LoginViewmodel = viewModel()
 ) {
-    when (loginViewmodel.openMainScreenAfterDelay().observeAsState().value) {
+    when (loginViewmodel.openMainScreenAfterDelay().collectAsState().value) {
         is Result.Success -> {
             navigateToLogin()
         }
