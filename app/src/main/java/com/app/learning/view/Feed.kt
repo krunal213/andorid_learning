@@ -51,9 +51,11 @@ private fun FeedContent() {
                 },
                 elevation = 1.dp
             )
-        }, content = {
-            paddingValues ->  
-        })
+        },
+        content = {
+            it
+        }
+    )
 }
 
 
