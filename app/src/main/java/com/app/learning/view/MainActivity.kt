@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.ui.Modifier
-import com.app.learning.view.navigation.LearningNavHost
 import com.app.learning.view.ui.theme.LearningTheme
 
 class MainActivity : ComponentActivity() {

@@ -3,11 +3,10 @@ package com.app.learning.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -19,29 +18,67 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.app.learning.InvalidPasswordException
+import com.app.learning.InvalidUserDetailException
 import com.app.learning.R
+import com.app.learning.Result
 import com.app.learning.view.ui.theme.LearningTheme
-import com.app.learning.viewmodel.LoginViewmodel
+import com.app.learning.viewmodel.LearningViewmodel
 
+@ExperimentalLifecycleComposeApi
 @Composable
-fun StatefulLogin(
+fun Login(
     navigateToRegistration: (Int) -> Unit,
-    loginViewmodel: LoginViewmodel = viewModel()
+    navigateToHome : () -> Unit,
+    learningViewmodel: LearningViewmodel = viewModel()
 ) {
-    StatelessLogin(
-        navigateToRegistration = navigateToRegistration,
-        onValidateLogin = {
+    var phoneNumberUserNameOrEmail by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    val isUserDetailValid by learningViewmodel.isUserDetailValid.collectAsStateWithLifecycle()
 
+    when (isUserDetailValid) {
+        is Result.Success -> {
+            LaunchedEffect(key1 = "home"){
+                navigateToHome()
+            }
         }
-    )
+        else -> {
+            LoginContent(
+                navigateToRegistration = navigateToRegistration,
+                onValidateLogin = {
+                    learningViewmodel.validatePhoneNumberUserNameOrEmailAndPassword(
+                        phoneNumberUserNameOrEmail,
+                        password
+                    )
+                },
+                onPasswordValueChange = { password = it },
+                onPhoneNumberUserNameOrEmailValueChange = { phoneNumberUserNameOrEmail = it },
+                phoneNumberUserNameOrEmail = phoneNumberUserNameOrEmail,
+                password = password,
+                result = isUserDetailValid
+            )
+        }
+    }
 }
 
 @Composable
-private fun StatelessLogin(
+private fun LoginContent(
     navigateToRegistration: (Int) -> Unit,
-    onValidateLogin: () -> Unit
+    onValidateLogin: () -> Unit,
+    onPhoneNumberUserNameOrEmailValueChange: (String) -> Unit,
+    onPasswordValueChange: (String) -> Unit,
+    phoneNumberUserNameOrEmail: String,
+    password: String,
+    result: Result<*>
 ) {
+    when(result){
+        is Result.Loading -> {
+            ProgressDialog()
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -64,21 +101,29 @@ private fun StatelessLogin(
                     .height(48.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            TextField(
-                value = "Phone number,username,or email",
-                onValueChange = {
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+            ErrorTextField(
+                label = "Phone number,username,or email",
+                phoneNumberUserNameOrEmail,
+                onPhoneNumberUserNameOrEmailValueChange,
+                error = when (result) {
+                    is Result.Error -> when (result.exception) {
+                        is InvalidUserDetailException -> result
+                        else -> null
+                    }
+                    else -> null
+                }
             )
-            TextField(
-                value = "Password",
-                onValueChange = {
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+            ErrorTextField(
+                label = "Password",
+                password,
+                onPasswordValueChange,
+                error = when (result) {
+                    is Result.Error -> when (result.exception) {
+                        is InvalidPasswordException -> result
+                        else -> null
+                    }
+                    else -> null
+                }
             )
             Button(
                 onClick = onValidateLogin,
@@ -119,10 +164,56 @@ private fun StatelessLogin(
     }
 }
 
+@Composable
+private fun ErrorTextField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    error: Result.Error? = null
+) {
+    Column {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, bottom = 8.dp),
+            label = { Text(text = label) },
+            trailingIcon = {
+                error?.apply {
+                    Icon(
+                        Icons.Filled.Warning,
+                        exception.message,
+                        tint = MaterialTheme.colors.error
+                    )
+                }
+            },
+            singleLine = true,
+            isError = error != null
+        )
+        error?.exception?.message?.apply {
+            Text(
+                text = this,
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultLoginPreview() {
     LearningTheme {
-        StatelessLogin(navigateToRegistration = {}, onValidateLogin = {})
+        LoginContent(
+            navigateToRegistration = {},
+            onValidateLogin = {},
+            onPasswordValueChange = {},
+            onPhoneNumberUserNameOrEmailValueChange = {},
+            password = "Password",
+            phoneNumberUserNameOrEmail = "Phone Number",
+            result = Result.Empty
+        )
     }
 }

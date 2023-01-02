@@ -21,26 +21,26 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.learning.R
 import com.app.learning.Result
 import com.app.learning.view.ui.theme.LearningTheme
-import com.app.learning.viewmodel.LoginViewmodel
+import com.app.learning.viewmodel.LearningViewmodel
 
 @Composable
-fun StatefulSplash(
+fun Splash(
     navigateToLogin: () -> Unit,
-    loginViewmodel: LoginViewmodel = viewModel()
+    learningViewmodel: LearningViewmodel = viewModel()
 ) {
-    when (loginViewmodel.openMainScreenAfterDelay().collectAsState().value) {
+    when (learningViewmodel.openMainScreenAfterDelay().collectAsState().value) {
         is Result.Success -> {
             navigateToLogin()
         }
         is Result.Loading -> {
-            StatelessSplash()
+            SplashContent()
         }
     }
 }
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-private fun StatelessSplash() {
+private fun SplashContent() {
     Column(modifier = Modifier.padding(24.dp)) {
         Column(
             modifier = Modifier
@@ -90,6 +90,6 @@ private fun StatelessSplash() {
 @Composable
 fun DefaultSplashPreview() {
     LearningTheme {
-        StatelessSplash()
+        SplashContent()
     }
 }
