@@ -10,8 +10,9 @@ jobs:
       - name: Release appbundle to internal google play store
         uses: r0adkll/upload-google-play@v1.0.16
         with:
+          serviceAccountJsonPlainText: ${{ SERVICE_ACCOUNT_JSON }}
           packageName: com.app.learning
-          releaseFiles: ${{ github.workspace }}/build/app/outputs/bundle/release/app-release.aab
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: internal
           status: completed
 
