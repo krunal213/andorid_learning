@@ -15,6 +15,5 @@ fun Account() {
 private fun AccountContent() {
     Surface(color = Color.Black, modifier = Modifier.fillMaxSize()) {
 
-
     }
 }
