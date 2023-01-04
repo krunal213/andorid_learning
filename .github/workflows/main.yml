@@ -6,6 +6,7 @@ on:
 jobs:
   release-android:
     runs-on: ubuntu-latest
+    steps:
       - name: Release appbundle to internal google play store
         uses: r0adkll/upload-google-play@v1.0.16
         with:
