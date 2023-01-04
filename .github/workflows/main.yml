@@ -76,7 +76,7 @@ jobs:
         with:
           serviceAccountJson: true
           packageName: com.app.learning
-          releaseFiles: andorid_learning/app/release/app-release.aab
+          releaseFiles: app\release\app-release.aab
           track: internal
           status: inProgress
           inAppUpdatePriority: 2
