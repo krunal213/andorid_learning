@@ -12,7 +12,7 @@ jobs:
         with:
           serviceAccountJson: true
           packageName: com.app.learning
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          releaseFile: app-release.aab
           track: internal
           status: completed
 
