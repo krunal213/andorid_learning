@@ -76,7 +76,7 @@ jobs:
         with:
           serviceAccountJson: true
           packageName: com.app.learning
-          releaseFiles: ./android/app/build/outputs/bundle/release/app-release.aab
+          releaseFiles: app/release
           track: internal
           status: inProgress
           inAppUpdatePriority: 2
