@@ -4,42 +4,52 @@ on:
     branches: [ master ]
   workflow_dispatch:
 jobs:
-  lint:
+  release-android:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
+               - name: Release appbundle to internal google play store
+               uses: r0adkll/upload-google-play@v1.0.16
+               with:
+                 releaseFiles: ${{ github.workspace }}/build/app/outputs/bundle/release/app-release.aab
+                 track: internal
+                 status: completed
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
 
-      - name: Run lint
-        run: ./gradlew lintDebug
+  #lint:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Checkout the code
+  #      uses: actions/checkout@v2
 
-      - name: Upload html test report
-        uses: actions/upload-artifact@v2
-        with:
-          name: lint.html
-          path: app/build/reports/lint-results-debug.html
+  #    - name: Make gradlew executable
+  #      run: chmod +x ./gradlew
 
-  unit-test:
-    needs: [lint]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
+  #    - name: Run lint
+  #      run: ./gradlew lintDebug
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+  #    - name: Upload html test report
+  #      uses: actions/upload-artifact@v2
+  #      with:
+  #        name: lint.html
+  #        path: app/build/reports/lint-results-debug.html
 
-      - name: Run tests
-        run: ./gradlew test
+  #unit-test:
+  #  needs: [lint]
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Checkout the code
+  #      uses: actions/checkout@v2
 
-      - name: Upload test report
-        uses: actions/upload-artifact@v2
-        with:
-          name: unit_test_report
-          path: app/build/reports/tests/testDebugUnitTest/
+  #    - name: Make gradlew executable
+  #      run: chmod +x ./gradlew
+
+  #    - name: Run tests
+  #      run: ./gradlew test
+
+  #   - name: Upload test report
+  #      uses: actions/upload-artifact@v2
+  #      with:
+  #        name: unit_test_report
+  #        path: app/build/reports/tests/testDebugUnitTest/
 
   #package:
   #  needs: [unit-test]
@@ -66,21 +76,21 @@ jobs:
   #        name: learning-version-1.0.0.apk
   #        path: app/build/outputs/apk/debug/app-debug.apk
 
-  package:
-    needs: [unit-test]
-    name: Upload APK
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload Android Release to Play Store
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJson: true
-          packageName: com.app.learning
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: internal
-          status: inProgress
-          inAppUpdatePriority: 2
-          userFraction: 0.33
-          whatsNewDirectory: distribution/whatsnew
-          mappingFile: app/build/outputs/mapping/release/mapping.txt
-          debugSymbols: app/intermediates/merged_native_libs/release/out/lib
+  #package:
+    #needs: [unit-test]
+    #name: Upload APK
+    #runs-on: ubuntu-latest
+    #steps:
+    #  - name: Upload Android Release to Play Store
+    #    uses: r0adkll/upload-google-play@v1
+    #    with:
+    #      serviceAccountJson: true
+    #      packageName: com.app.learning
+    #      releaseFiles: app/build/outputs/bundle/release/app-release.aab
+    #      track: internal
+    #      status: inProgress
+    #      inAppUpdatePriority: 2
+    #      userFraction: 0.33
+    #      whatsNewDirectory: distribution/whatsnew
+    #      mappingFile: app/build/outputs/mapping/release/mapping.txt
+    #      debugSymbols: app/intermediates/merged_native_libs/release/out/lib#
