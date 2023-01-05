@@ -1,76 +1,35 @@
-name: Android CI
+name: Android Publish
 
 on:
-  # Triggers the workflow on push or pull request events but only for default and protected branches
   push:
     branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Run lint
-        run: ./gradlew lintDebug
-
-      - name: Upload html test report
-        uses: actions/upload-artifact@v2
-        with:
-          name: lint.html
-          path: app/build/reports/lint-results-debug.html
-
-  unit-test:
-    needs: [ lint ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Run tests
-        run: ./gradlew test
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v2
-        with:
-          name: unit_test_report
-          path: app/build/reports/tests/testDebugUnitTest/
-
   build:
-    needs: [ unit-test ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
 
-      - name: set up JDK 11
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set Up JDK
         uses: actions/setup-java@v1
         with:
           java-version: 11
 
-      - name: Grant rights
+      - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
-        id: build
+      - name: Run Tests
+        run: ./gradlew test
+
+      - name: Build Project
         run: ./gradlew build
 
       - name: Build Release AAB
-        id: buildRelease
         run: ./gradlew bundleRelease
 
       - name: Sign AAB
-        id: sign
         uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/bundle/release
@@ -79,16 +38,11 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Create service_account.json
-        id: createServiceAccount
-        run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
-
-      - name: Deploy to Play Store (BETA)
-        id: deploy
-        uses: r0adkll/upload-google-play@v1
+      - name: Deploy to Play Store
+        uses: r0adkll/upload-google-play@v1.0.19
         with:
-          serviceAccountJson: service_account.json
+          serviceAccountJsonPlainText: ${{secrets.SERVICE_ACCOUNT_JSON}}
           packageName: com.app.learning
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: beta
-          #whatsNewDirectory: whatsnew/
+          track: production
+          status: draft
