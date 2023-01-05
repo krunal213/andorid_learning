@@ -88,7 +88,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: service_account.json
-          packageName: com.app.learning
+          packageName: com.package
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: beta
           #whatsNewDirectory: whatsnew/
