@@ -2,8 +2,7 @@ name: Android Publish
 
 on:
   push:
-    branches:
-      - 'release/**'
+    branches: [ master ]
 
 jobs:
   build:
@@ -43,7 +42,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{secrets.SERVICE_ACCOUNT}}
-          packageName: com.app.learning
+          packageName: com.tomerpacific.laundry
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: production
           status: completed
