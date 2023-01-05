@@ -41,18 +41,10 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Create service_account.json
-        id: createServiceAccount
-        run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
-
-      - name: Deploy to Play Store (BETA)
-        id: deploy
+      - name: Upload Android Release to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJson: service_account.json
+          serviceAccountJsonPlainText: ${{secrets.SERVICE_ACCOUNT_JSON}}
           packageName: com.app.learning
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: production
-          status: inProgress
-          inAppUpdatePriority: 2
-          userFraction: 0.33
+          releaseFile: app/build/outputs/bundle/release/app-release.aab
+          track: beta
