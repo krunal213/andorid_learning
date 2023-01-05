@@ -52,7 +52,4 @@ jobs:
           serviceAccountJson: service_account.json
           packageName: com.app.learning
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: production
-          status: inProgress
-          inAppUpdatePriority: 2
-          userFraction: 0.33
+          
