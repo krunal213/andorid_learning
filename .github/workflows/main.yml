@@ -53,4 +53,5 @@ jobs:
           packageName: com.app.learning
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: production
+          status: inProgress
           #whatsNewDirectory: whatsnew/
