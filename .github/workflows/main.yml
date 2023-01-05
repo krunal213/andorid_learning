@@ -54,4 +54,8 @@ jobs:
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: production
           status: inProgress
+          inAppUpdatePriority: 2
           userFraction: 0.33
+          whatsNewDirectory: distribution/whatsnew
+          mappingFile: app/build/outputs/mapping/release/mapping.txt
+          debugSymbols: app/intermediates/merged_native_libs/release/out/lib
