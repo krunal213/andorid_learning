@@ -48,4 +48,4 @@ jobs:
           packageName: com.app.learning
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: beta
-          status: draft
+          #status: draft
