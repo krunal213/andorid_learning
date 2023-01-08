@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">Learning</string>
-    <string name="profile">Profile</string>
-    <string name="friends_list">Friends</string>
-    <string name="feed">feed</string>
 </resources>
