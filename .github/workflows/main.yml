@@ -45,3 +45,4 @@ jobs:
           packageName: com.app.learning
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           whatsNewDirectory: distribution/whatsnew
+          status: completed
